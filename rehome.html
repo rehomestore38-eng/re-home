@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RE HOME – Give Old Items a New Life</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --green-deep: #1a4a2e;
+    --green-mid: #2d7a4f;
+    --green-bright: #3dbe74;
+    --green-light: #a8e6c0;
+    --green-pale: #e8f7ef;
+    --cream: #faf8f3;
+    --text-dark: #0f1f15;
+    --text-mid: #3a5a46;
+    --text-light: #6b8f7a;
+    --accent-gold: #d4a843;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-body); background: var(--cream); color: var(--text-dark); overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 5%;
+    background: rgba(250,248,243,0.93);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(61,190,116,0.15);
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 4px 30px rgba(26,74,46,0.10); }
+  .nav-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+  .nav-logo-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--green-mid); display: grid; place-items: center; }
+  .nav-logo-text { font-family: var(--font-display); font-weight: 900; font-size: 1.4rem; color: var(--green-deep); letter-spacing: -0.02em; }
+  .nav-logo-text span { color: var(--green-bright); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; font-size: 0.9rem; font-weight: 500; color: var(--text-mid); transition: color 0.2s; }
+  .nav-links a:hover { color: var(--green-mid); }
+  .nav-ctas { display: flex; gap: 0.75rem; align-items: center; }
+  .btn-ghost { padding: 0.5rem 1.2rem; border-radius: 50px; border: 1.5px solid var(--green-mid); background: transparent; color: var(--green-mid); font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-ghost:hover { background: var(--green-pale); }
+  .btn-solid { padding: 0.5rem 1.2rem; border-radius: 50px; border: none; background: var(--green-mid); color: #fff; font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-solid:hover { background: var(--green-deep); transform: translateY(-1px); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--green-deep); border-radius: 2px; transition: all 0.3s; }
+
+  /* HERO */
+  #home {
+    min-height: 100vh; display: flex; align-items: center;
+    padding: 7rem 5% 4rem; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, var(--cream) 0%, #eaf6f0 55%, var(--green-pale) 100%);
+  }
+  .hero-bg-orb {
+    position: absolute; right: 5%; top: 15%;
+    width: 480px; height: 480px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(61,190,116,0.15) 0%, rgba(61,190,116,0.04) 55%, transparent 75%);
+    pointer-events: none;
+  }
+  .hero-illustration {
+    position: absolute; right: 3%; top: 50%; transform: translateY(-50%);
+    width: 45%; max-width: 520px; opacity: 0.92;
+    pointer-events: none;
+  }
+  .hero-content { max-width: 580px; position: relative; z-index: 2; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--green-pale); border: 1px solid var(--green-light);
+    color: var(--green-mid); border-radius: 50px;
+    padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 600;
+    margin-bottom: 1.5rem; letter-spacing: 0.04em;
+  }
+  .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-bright); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
+  .hero-headline {
+    font-family: var(--font-display); font-size: clamp(2.8rem,5vw,4.4rem);
+    font-weight: 900; line-height: 1.05; color: var(--green-deep);
+    letter-spacing: -0.03em; margin-bottom: 1.2rem;
+  }
+  .hero-headline em { font-style: italic; color: var(--green-bright); }
+  .hero-sub { font-size: 1.05rem; line-height: 1.7; color: var(--text-light); max-width: 440px; margin-bottom: 2.2rem; }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+  .btn-hero-p {
+    padding: 0.85rem 2rem; border-radius: 50px; background: var(--green-mid); color: #fff;
+    font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.25s;
+    display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;
+  }
+  .btn-hero-p:hover { background: var(--green-deep); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(45,122,79,0.35); }
+  .btn-hero-s {
+    padding: 0.85rem 2rem; border-radius: 50px; background: transparent; color: var(--green-deep);
+    font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
+    border: 2px solid var(--green-mid); cursor: pointer; transition: all 0.25s;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-hero-s:hover { background: var(--green-pale); transform: translateY(-2px); }
+  .hero-stats { display: flex; gap: 2.5rem; flex-wrap: wrap; }
+  .stat-num { font-family: var(--font-display); font-weight: 700; font-size: 1.9rem; color: var(--green-deep); }
+  .stat-label { font-size: 0.8rem; color: var(--text-light); font-weight: 500; margin-top: 0.1rem; }
+
+  /* SECTIONS */
+  section { padding: 5rem 5%; }
+  .section-tag { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-mid); margin-bottom: 0.8rem; }
+  .section-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(2rem,3.5vw,3rem); color: var(--green-deep); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1rem; }
+  .section-sub { font-size: 1rem; color: var(--text-light); max-width: 520px; line-height: 1.7; }
+
+  /* HOW IT WORKS */
+  #how { background: var(--green-deep); }
+  #how .section-title { color: #fff; }
+  #how .section-sub { color: rgba(255,255,255,0.6); }
+  #how .section-tag { color: var(--green-bright); }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1.5rem; margin-top: 3.5rem; }
+  .step-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 2rem; position: relative; overflow: hidden; transition: transform 0.3s, background 0.3s; }
+  .step-card:hover { transform: translateY(-6px); background: rgba(255,255,255,0.10); }
+  .step-num { font-family: var(--font-display); font-size: 4rem; font-weight: 900; color: rgba(255,255,255,0.06); position: absolute; top: 0.5rem; right: 1rem; line-height: 1; }
+  .step-icon { width: 52px; height: 52px; border-radius: 14px; background: var(--green-bright); display: grid; place-items: center; margin-bottom: 1.2rem; }
+  .step-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; margin-bottom: 0.6rem; color: #fff; }
+  .step-desc { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.65; }
+
+  /* CATEGORIES */
+  #categories { background: var(--cream); }
+  .cats { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1.5rem; margin-top: 3.5rem; }
+  .cat-card { border-radius: 24px; overflow: hidden; position: relative; height: 300px; cursor: pointer; transition: transform 0.35s, box-shadow 0.35s; }
+  .cat-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 20px 50px rgba(26,74,46,0.18); }
+  .cat-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.4s; }
+  .cat-card:hover .cat-bg { transform: scale(1.06); }
+  .cat-bg-dots { position: absolute; inset: 0; opacity: 0.1; background-image: radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px); background-size: 22px 22px; }
+  .cat-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,30,18,0.9) 0%, rgba(8,30,18,0.08) 55%); }
+  .cat-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.8rem; }
+  .cat-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(61,190,116,0.25); border: 1px solid rgba(61,190,116,0.4); display: grid; place-items: center; margin-bottom: 0.9rem; }
+  .cat-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+  .cat-desc { font-size: 0.8rem; color: rgba(255,255,255,0.65); }
+  .cat-electronics .cat-bg { background: linear-gradient(135deg, #1a3a5c 0%, #0d2233 100%); }
+  .cat-furniture .cat-bg { background: linear-gradient(135deg, #3d2b1a 0%, #5c3d20 100%); }
+  .cat-appliances .cat-bg { background: linear-gradient(135deg, #1c3a35 0%, #0f2520 100%); }
+
+  /* FEATURES */
+  #features { background: var(--green-pale); }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 1.5rem; margin-top: 3.5rem; }
+  .feature-card { background: #fff; border-radius: 20px; padding: 1.8rem; border: 1px solid rgba(61,190,116,0.15); transition: transform 0.3s, box-shadow 0.3s; }
+  .feature-card:hover { transform: translateY(-5px); box-shadow: 0 12px 35px rgba(45,122,79,0.12); }
+  .feat-icon { width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; margin-bottom: 1.2rem; }
+  .feat-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--green-deep); margin-bottom: 0.5rem; }
+  .feat-desc { font-size: 0.88rem; color: var(--text-light); line-height: 1.65; }
+
+  /* PRODUCTS */
+  #products { background: var(--cream); }
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 1.5rem; margin-top: 3.5rem; }
+  .product-card { background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid rgba(61,190,116,0.12); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; }
+  .product-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(26,74,46,0.13); }
+  .product-img { height: 155px; display: grid; place-items: center; font-size: 3.8rem; background: var(--green-pale); }
+  .product-body { padding: 1.2rem; }
+  .product-badge { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green-mid); background: var(--green-pale); border-radius: 50px; padding: 0.2rem 0.6rem; display: inline-block; margin-bottom: 0.5rem; }
+  .product-name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--green-deep); margin-bottom: 0.3rem; }
+  .product-price { font-size: 1.1rem; font-weight: 600; color: var(--green-mid); }
+  .product-orig { font-size: 0.78rem; color: var(--text-light); text-decoration: line-through; margin-left: 0.4rem; }
+
+  /* CTA */
+  #cta { background: linear-gradient(135deg, var(--green-mid) 0%, var(--green-deep) 100%); text-align: center; padding: 6rem 5%; position: relative; overflow: hidden; }
+  #cta::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 32px 32px; }
+  #cta h2 { font-family: var(--font-display); font-size: clamp(2.2rem,4vw,3.5rem); font-weight: 900; color: #fff; margin-bottom: 0.8rem; position: relative; }
+  #cta p { color: rgba(255,255,255,0.7); font-size: 1.05rem; margin-bottom: 2.5rem; position: relative; }
+  .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+  .btn-cta-w { padding: 0.9rem 2.2rem; border-radius: 50px; background: #fff; color: var(--green-deep); font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.25s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .btn-cta-w:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  .btn-cta-o { padding: 0.9rem 2.2rem; border-radius: 50px; background: transparent; color: #fff; font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; border: 2px solid rgba(255,255,255,0.6); cursor: pointer; transition: all 0.25s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .btn-cta-o:hover { background: rgba(255,255,255,0.12); transform: translateY(-3px); }
+
+  /* ABOUT */
+  #about { background: #fff; }
+  .about-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .about-visual { position: relative; }
+  .about-main-box { border-radius: 28px; background: linear-gradient(145deg, var(--green-deep) 0%, var(--green-mid) 100%); padding: 3rem; color: white; text-align: center; min-height: 360px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .about-big-icon { margin-bottom: 1.5rem; }
+  .about-main-box h3 { font-family: var(--font-display); font-size: 2rem; font-weight: 900; margin-bottom: 0.8rem; line-height: 1.1; }
+  .about-main-box p { font-size: 0.9rem; color: rgba(255,255,255,0.65); line-height: 1.7; }
+  .about-float-card { position: absolute; bottom: -1.5rem; right: -1.5rem; background: var(--accent-gold); color: #fff; border-radius: 18px; padding: 1.2rem 1.5rem; box-shadow: 0 10px 30px rgba(212,168,67,0.4); }
+  .about-float-card .fn { font-family: var(--font-display); font-size: 2rem; font-weight: 900; }
+  .about-float-card .fl { font-size: 0.78rem; font-weight: 500; opacity: 0.9; }
+  .mission-item { display: flex; gap: 1rem; margin-bottom: 1.6rem; align-items: flex-start; }
+  .mission-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green-bright); margin-top: 0.45rem; flex-shrink: 0; }
+  .mission-item h4 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--green-deep); margin-bottom: 0.3rem; }
+  .mission-item p { font-size: 0.9rem; color: var(--text-light); line-height: 1.6; }
+
+  /* CONTACT */
+  #contact { background: var(--green-pale); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; align-items: start; margin-top: 3.5rem; }
+  .contact-info-item { display: flex; gap: 1rem; margin-bottom: 1.8rem; align-items: flex-start; }
+  .contact-info-icon { width: 46px; height: 46px; border-radius: 12px; background: var(--green-mid); display: grid; place-items: center; flex-shrink: 0; }
+  .contact-info-item h4 { font-weight: 600; color: var(--green-deep); margin-bottom: 0.2rem; font-size: 0.95rem; }
+  .contact-info-item p { font-size: 0.9rem; color: var(--text-light); }
+  .contact-form { background: #fff; border-radius: 24px; padding: 2.5rem; border: 1px solid rgba(61,190,116,0.15); box-shadow: 0 4px 20px rgba(26,74,46,0.06); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-group label { display: block; font-size: 0.83rem; font-weight: 600; color: var(--text-mid); margin-bottom: 0.4rem; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem 1rem; border-radius: 12px; border: 1.5px solid rgba(61,190,116,0.25); background: var(--cream); color: var(--text-dark); font-family: var(--font-body); font-size: 0.9rem; transition: border-color 0.2s, box-shadow 0.2s; outline: none; resize: vertical; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(61,190,116,0.12); }
+  .form-group textarea { min-height: 100px; }
+  .btn-submit { width: 100%; padding: 0.9rem; border-radius: 50px; background: var(--green-mid); color: #fff; font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.25s; }
+  .btn-submit:hover { background: var(--green-deep); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(45,122,79,0.3); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(10,30,18,0.6); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 24px; padding: 2.5rem; max-width: 440px; width: 100%; box-shadow: 0 30px 80px rgba(10,30,18,0.3); position: relative; }
+  .modal-close { position: absolute; top: 1rem; right: 1.2rem; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-light); }
+  .modal-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 900; color: var(--green-deep); margin-bottom: 0.3rem; }
+  .modal-sub { font-size: 0.88rem; color: var(--text-light); margin-bottom: 1.6rem; }
+  .modal-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.6rem; }
+  .modal-tab { flex: 1; padding: 0.6rem; border-radius: 10px; border: 1.5px solid transparent; font-family: var(--font-body); font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: var(--green-pale); color: var(--text-mid); }
+  .modal-tab.active { background: var(--green-mid); color: #fff; }
+
+  /* FOOTER */
+  footer { background: var(--green-deep); color: rgba(255,255,255,0.65); padding: 4rem 5% 2rem; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+  .footer-brand p { font-size: 0.88rem; line-height: 1.7; margin-top: 0.8rem; max-width: 240px; }
+  .footer-col h4 { font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; color: #fff; margin-bottom: 1rem; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.5rem; }
+  .footer-col ul li a { text-decoration: none; color: rgba(255,255,255,0.55); font-size: 0.88rem; transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--green-bright); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  .footer-bottom p { font-size: 0.82rem; }
+  .eco-badge { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: var(--green-bright); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--green-mid); color: #fff; padding: 0.9rem 1.5rem; border-radius: 12px; font-size: 0.9rem; font-weight: 500; transform: translateY(6rem); opacity: 0; transition: all 0.4s ease; box-shadow: 0 6px 25px rgba(45,122,79,0.35); }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+  .fade-up { opacity: 0; animation: fadeUp 0.7s ease forwards; }
+  .d1{animation-delay:0.15s} .d2{animation-delay:0.3s} .d3{animation-delay:0.45s} .d4{animation-delay:0.6s}
+
+  /* RESPONSIVE */
+  @media(max-width:900px){
+    .about-inner{grid-template-columns:1fr;gap:2.5rem}
+    .about-float-card{right:1rem;bottom:-1rem}
+    .contact-grid{grid-template-columns:1fr;gap:2.5rem}
+    .footer-grid{grid-template-columns:1fr 1fr;gap:2rem}
+    .hero-illustration{display:none}
+    .hero-content{max-width:100%}
+    .form-row{grid-template-columns:1fr}
+  }
+  @media(max-width:640px){
+    .nav-links,.nav-ctas{display:none}
+    .hamburger{display:flex}
+    nav.menu-open .nav-links{display:flex;flex-direction:column;gap:0.5rem;position:fixed;top:64px;left:0;right:0;background:var(--cream);padding:1.5rem 5%;border-bottom:1px solid rgba(61,190,116,0.15);box-shadow:0 10px 30px rgba(0,0,0,0.08)}
+    nav.menu-open .nav-ctas{display:flex;flex-direction:column;position:fixed;top:calc(64px + 10rem);left:0;right:0;background:var(--cream);padding:1rem 5% 2rem}
+    .footer-grid{grid-template-columns:1fr}
+    #home{padding:6rem 5% 3rem}
+    .hero-stats{gap:1.5rem}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#home" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+    <span class="nav-logo-text">RE<span>HOME</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#categories">Categories</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-ctas">
+    <button class="btn-ghost" onclick="openModal('login')">Login</button>
+    <button class="btn-solid" onclick="openModal('signup')">Sign Up</button>
+  </div>
+  <button class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg-orb"></div>
+
+  <!-- SVG Illustration -->
+  <div class="hero-illustration">
+    <svg viewBox="0 0 520 480" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background blob -->
+      <ellipse cx="260" cy="240" rx="220" ry="210" fill="#2d7a4f" opacity="0.08"/>
+      <!-- House outline -->
+      <path d="M160 310 L160 195 L260 120 L360 195 L360 310 Z" fill="#2d7a4f" opacity="0.18" stroke="#3dbe74" stroke-width="2" stroke-linejoin="round"/>
+      <rect x="220" y="250" width="80" height="60" rx="6" fill="#3dbe74" opacity="0.35"/>
+      <rect x="175" y="215" width="55" height="45" rx="5" fill="#3dbe74" opacity="0.25"/>
+      <rect x="290" y="215" width="55" height="45" rx="5" fill="#3dbe74" opacity="0.25"/>
+      <!-- Recycle arrows around house -->
+      <path d="M95 240 Q85 200 115 175" stroke="#3dbe74" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <polygon points="107,168 120,182 100,186" fill="#3dbe74" opacity="0.8"/>
+      <path d="M425 240 Q435 200 405 175" stroke="#3dbe74" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <polygon points="413,168 400,182 420,186" fill="#3dbe74" opacity="0.8"/>
+      <path d="M175 385 Q260 410 345 385" stroke="#3dbe74" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <polygon points="352,378 352,395 336,386" fill="#3dbe74" opacity="0.8"/>
+      <!-- Price tag -->
+      <rect x="295" y="265" width="60" height="38" rx="8" fill="#d4a843" opacity="0.85"/>
+      <circle cx="307" cy="284" r="4" fill="white" opacity="0.9"/>
+      <line x1="314" y1="276" x2="345" y2="276" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+      <line x1="314" y1="284" x2="345" y2="284" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
+      <!-- Repair wrench icon -->
+      <g transform="translate(92,310) rotate(-30)">
+        <path d="M8 2 Q14 2 14 8 Q14 11 12 13 L2 23 Q0 25 -2 23 Q-4 21 -2 19 L8 9 Q10 7 8 2Z" fill="#a8e6c0" opacity="0.7" stroke="#3dbe74" stroke-width="1"/>
+      </g>
+      <!-- Sparkles -->
+      <circle cx="140" cy="155" r="5" fill="#a8e6c0" opacity="0.8"/>
+      <circle cx="395" cy="140" r="7" fill="#a8e6c0" opacity="0.55"/>
+      <circle cx="420" cy="340" r="4" fill="#a8e6c0" opacity="0.65"/>
+      <circle cx="105" cy="380" r="6" fill="#a8e6c0" opacity="0.5"/>
+      <circle cx="260" cy="80" r="8" fill="#d4a843" opacity="0.35"/>
+      <!-- Floating electronics -->
+      <rect x="370" y="270" width="45" height="32" rx="5" fill="#1a3a5c" opacity="0.4" stroke="#3dbe74" stroke-width="1.5"/>
+      <rect x="375" y="274" width="35" height="24" rx="2" fill="#3dbe74" opacity="0.2"/>
+      <!-- Leaf accent -->
+      <path d="M440 390 Q460 360 450 340 Q430 360 440 390Z" fill="#3dbe74" opacity="0.45"/>
+      <path d="M100 130 Q120 100 110 80 Q90 100 100 130Z" fill="#3dbe74" opacity="0.45"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge fade-up"><div class="badge-dot"></div> Eco-Friendly Refurbished Platform</div>
+    <h1 class="hero-headline fade-up d1">Give Old Items<br>a <em>New Life.</em></h1>
+    <p class="hero-sub fade-up d2">RE HOME buys your used electronics, furniture & appliances, repairs and upgrades them, then resells at prices everyone can afford — saving money and the planet.</p>
+    <div class="hero-ctas fade-up d3">
+      <a href="#contact" class="btn-hero-p">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+        Sell Your Item
+      </a>
+      <a href="#products" class="btn-hero-s">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.97-1.67L23 6H6"/></svg>
+        Shop Products
+      </a>
+    </div>
+    <div class="hero-stats fade-up d4">
+      <div><div class="stat-num">2,400+</div><div class="stat-label">Items Refurbished</div></div>
+      <div><div class="stat-num">98%</div><div class="stat-label">Customer Satisfaction</div></div>
+      <div><div class="stat-num">60%</div><div class="stat-label">Average Savings</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div style="text-align:center;max-width:560px;margin:0 auto;">
+    <span class="section-tag">The Process</span>
+    <h2 class="section-title">How RE HOME Works</h2>
+    <p class="section-sub">Three simple steps — connecting your old items to someone who needs them, fully repaired.</p>
+  </div>
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="step-title">You Sell Your Item</div>
+      <div class="step-desc">List your used electronics, furniture, or appliances. Our team visits, inspects, and offers a fair price. Quick and hassle-free pickup.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div class="step-title">We Repair &amp; Upgrade</div>
+      <div class="step-desc">Our certified technicians clean, repair, and upgrade items to near-new condition using quality components and professional care.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.97-1.67L23 6H6"/></svg>
+      </div>
+      <div class="step-title">We Resell Like New</div>
+      <div class="step-desc">Refurbished items are listed with a quality certificate at 40–70% off retail price — giving budget buyers access to great products.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section id="categories">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <span class="section-tag">Browse By</span>
+      <h2 class="section-title">Product Categories</h2>
+    </div>
+    <p class="section-sub" style="max-width:360px;">From gadgets to living-room furniture — we refurbish it all.</p>
+  </div>
+  <div class="cats">
+    <div class="cat-card cat-electronics">
+      <div class="cat-bg"><div class="cat-bg-dots"></div></div>
+      <div class="cat-overlay"></div>
+      <div class="cat-content">
+        <div class="cat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3dbe74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        </div>
+        <div class="cat-title">Electronics</div>
+        <div class="cat-desc">Mobiles · Laptops · TVs · Tablets</div>
+      </div>
+    </div>
+    <div class="cat-card cat-furniture">
+      <div class="cat-bg"><div class="cat-bg-dots"></div></div>
+      <div class="cat-overlay"></div>
+      <div class="cat-content">
+        <div class="cat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3dbe74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9V7a2 2 0 00-2-2H6a2 2 0 00-2 2v2"/><path d="M2 11v5a2 2 0 002 2h16a2 2 0 002-2v-5a1 1 0 00-1-1H3a1 1 0 00-1 1z"/><path d="M6 18v2M18 18v2"/></svg>
+        </div>
+        <div class="cat-title">Furniture</div>
+        <div class="cat-desc">Sofas · Tables · Chairs · Beds</div>
+      </div>
+    </div>
+    <div class="cat-card cat-appliances">
+      <div class="cat-bg"><div class="cat-bg-dots"></div></div>
+      <div class="cat-overlay"></div>
+      <div class="cat-content">
+        <div class="cat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3dbe74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+        </div>
+        <div class="cat-title">Appliances</div>
+        <div class="cat-desc">Washing Machines · Fridges · Kitchen</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div style="text-align:center;max-width:540px;margin:0 auto;">
+    <span class="section-tag">Why Choose Us</span>
+    <h2 class="section-title">Built on Trust &amp; Quality</h2>
+    <p class="section-sub">Every item passes rigorous inspection before it reaches you.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feat-icon" style="background:#e8f7ef;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2d7a4f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      </div>
+      <div class="feat-title">Certified Refurbished</div>
+      <div class="feat-desc">Every product comes with a digital refurbishment certificate listing repair details and warranty period clearly.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon" style="background:#fff8e6;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d4a843" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="feat-title">30-Day Quality Check</div>
+      <div class="feat-desc">All items go through a 30-day quality assurance period. Defective items are repaired or replaced at no cost to you.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon" style="background:#e8f7ef;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2d7a4f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      </div>
+      <div class="feat-title">Affordable Pricing</div>
+      <div class="feat-desc">Products sold at 40–70% below retail prices. Quality items without the premium — making refurbished accessible to all.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon" style="background:#eef9f4;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3dbe74" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      </div>
+      <div class="feat-title">Eco-Friendly Approach</div>
+      <div class="feat-desc">Every purchase reduces electronic and household waste. Join the circular economy — use more, waste less, live smarter.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS PREVIEW -->
+<section id="products">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <span class="section-tag">Featured Items</span>
+      <h2 class="section-title">Ready to Go Home</h2>
+    </div>
+    <button class="btn-ghost" style="margin-bottom:0.5rem;" onclick="showToast('📦 Full catalogue coming soon!')">View All Products →</button>
+  </div>
+  <div class="products-grid">
+    <div class="product-card" onclick="showToast('📱 Added to wishlist!')">
+      <div class="product-img">📱</div>
+      <div class="product-body">
+        <span class="product-badge">Electronics</span>
+        <div class="product-name">Refurbished iPhone 12</div>
+        <div><span class="product-price">₹18,499</span><span class="product-orig">₹42,999</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showToast('💻 Added to wishlist!')">
+      <div class="product-img">💻</div>
+      <div class="product-body">
+        <span class="product-badge">Electronics</span>
+        <div class="product-name">Dell Laptop i5 8th Gen</div>
+        <div><span class="product-price">₹22,000</span><span class="product-orig">₹55,000</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showToast('🛋️ Added to wishlist!')">
+      <div class="product-img">🛋️</div>
+      <div class="product-body">
+        <span class="product-badge">Furniture</span>
+        <div class="product-name">3-Seater L-Sofa</div>
+        <div><span class="product-price">₹8,500</span><span class="product-orig">₹22,000</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showToast('🧺 Added to wishlist!')">
+      <div class="product-img">🧺</div>
+      <div class="product-body">
+        <span class="product-badge">Appliances</span>
+        <div class="product-name">Samsung 6.5kg Washer</div>
+        <div><span class="product-price">₹9,200</span><span class="product-orig">₹26,000</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showToast('📺 Added to wishlist!')">
+      <div class="product-img">📺</div>
+      <div class="product-body">
+        <span class="product-badge">Electronics</span>
+        <div class="product-name">Sony 43" Smart TV</div>
+        <div><span class="product-price">₹17,500</span><span class="product-orig">₹45,000</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showToast('❄️ Added to wishlist!')">
+      <div class="product-img">❄️</div>
+      <div class="product-body">
+        <span class="product-badge">Appliances</span>
+        <div class="product-name">LG Double Door Fridge</div>
+        <div><span class="product-price">₹14,000</span><span class="product-orig">₹38,500</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showToast('🪑 Added to wishlist!')">
+      <div class="product-img">🪑</div>
+      <div class="product-body">
+        <span class="product-badge">Furniture</span>
+        <div class="product-name">Ergonomic Office Chair</div>
+        <div><span class="product-price">₹3,800</span><span class="product-orig">₹9,500</span></div>
+      </div>
+    </div>
+    <div class="product-card" onclick="showToast('🖥️ Added to wishlist!')">
+      <div class="product-img">🖥️</div>
+      <div class="product-body">
+        <span class="product-badge">Electronics</span>
+        <div class="product-name">HP 24" Monitor FHD</div>
+        <div><span class="product-price">₹7,200</span><span class="product-orig">₹18,000</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <h2>Ready to Buy, Sell or Recycle?</h2>
+  <p>Join thousands of happy customers saving money &amp; reducing waste with RE HOME.</p>
+  <div class="cta-btns">
+    <a href="#contact" class="btn-cta-w">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      Sell Your Item Now
+    </a>
+    <a href="#products" class="btn-cta-o">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.97-1.67L23 6H6"/></svg>
+      Shop Refurbished
+    </a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-visual">
+      <div class="about-main-box">
+        <div class="about-big-icon">
+          <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#3dbe74" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </div>
+        <h3>Buy → Repair<br>→ Resell</h3>
+        <p>The circular model that makes great products affordable while keeping waste out of landfills.</p>
+      </div>
+      <div class="about-float-card">
+        <div class="fn">5 Tons</div>
+        <div class="fl">E-Waste Prevented</div>
+      </div>
+    </div>
+    <div class="about-mission">
+      <span class="section-tag">Our Mission</span>
+      <h2 class="section-title">Saving Money,<br>Saving the Planet</h2>
+      <p style="color:var(--text-light);font-size:0.95rem;line-height:1.7;margin-bottom:2rem;">RE HOME was founded with one belief: that well-made products deserve a second chance. We connect conscious buyers and sellers, building a community that values sustainability over disposal.</p>
+      <div class="mission-item">
+        <div class="mission-dot"></div>
+        <div>
+          <h4>Reduce Electronic Waste</h4>
+          <p>India generates over 3 million tonnes of e-waste annually. We extend product lifespans to fight that number every single day.</p>
+        </div>
+      </div>
+      <div class="mission-item">
+        <div class="mission-dot"></div>
+        <div>
+          <h4>Empower Budget Buyers</h4>
+          <p>Not everyone can afford brand-new. We make quality accessible, letting families and students get great products for less.</p>
+        </div>
+      </div>
+      <div class="mission-item">
+        <div class="mission-dot"></div>
+        <div>
+          <h4>Fair Value for Sellers</h4>
+          <p>Instead of throwing away or getting cheated, sellers receive fair prices and know their items go to good homes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <span class="section-tag">Get In Touch</span>
+  <h2 class="section-title">Let's Connect</h2>
+  <div class="contact-grid">
+    <div>
+      <p style="color:var(--text-light);font-size:0.95rem;line-height:1.7;margin-bottom:2.5rem;">Have a product to sell? Looking for something specific? Or just want to know more? We'd love to hear from you.</p>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.21 1.17 2 2 0 012.22 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.07 6.07l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+        </div>
+        <div><h4>Phone</h4><p>+91 82475 34264</p></div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div><h4>Email</h4><p>rehomestore38@gmail.com</p></div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div><h4>Location</h4><p>LPU-Phagwara, Punjab, India</p></div>
+      </div>
+    </div>
+    <div class="contact-form">
+      <h3 style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:var(--green-deep);margin-bottom:1.5rem;">Send us a Message</h3>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" id="fname" placeholder="Rahul"/></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Sharma"/></div>
+      </div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="femail" placeholder="rahul@example.com"/></div>
+      <div class="form-group">
+        <label>I want to…</label>
+        <select>
+          <option value="">Select an option</option>
+          <option>Sell my item</option>
+          <option>Buy a refurbished product</option>
+          <option>Get a repair quote</option>
+          <option>Just inquire</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Message</label><textarea placeholder="Tell us about your item or query…"></textarea></div>
+      <button class="btn-submit" onclick="submitForm()">Send Message ✓</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#home" class="nav-logo" style="margin-bottom:0.8rem;display:inline-flex;">
+        <div class="nav-logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <span class="nav-logo-text">RE<span style="color:var(--green-bright)">HOME</span></span>
+      </a>
+      <p>India's trusted platform for certified refurbished electronics, furniture, and household appliances — affordable, quality-checked, and eco-friendly.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#features">Why RE HOME</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Categories</h4>
+      <ul>
+        <li><a href="#categories">Electronics</a></li>
+        <li><a href="#categories">Furniture</a></li>
+        <li><a href="#categories">Appliances</a></li>
+        <li><a href="#products">All Products</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#contact">Sell My Item</a></li>
+        <li><a href="#">Buyer's Guide</a></li>
+        <li><a href="#">Warranty Policy</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 RE HOME. All rights reserved.</p>
+    <div class="eco-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+      Proudly Eco-Friendly · Made in India 🇮🇳
+    </div>
+  </div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalTitle">Welcome Back</div>
+    <div class="modal-sub" id="modalSub">Sign in to your RE HOME account</div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="loginTab" onclick="switchTab('login')">Login</button>
+      <button class="modal-tab" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+    <div id="loginFields">
+      <div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com"/></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••"/></div>
+      <button class="btn-submit" onclick="fakeAuth('login')">Login to RE HOME</button>
+    </div>
+    <div id="signupFields" style="display:none;">
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="Rahul"/></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Sharma"/></div>
+      </div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com"/></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="Min 8 characters"/></div>
+      <button class="btn-submit" onclick="fakeAuth('signup')">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Scroll effect on nav
+  window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Mobile menu
+  function toggleMenu() {
+    document.getElementById('mainNav').classList.toggle('menu-open');
+  }
+  document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => {
+    document.getElementById('mainNav').classList.remove('menu-open');
+  }));
+
+  // Modal
+  function openModal(type) {
+    document.getElementById('authModal').classList.add('open');
+    switchTab(type);
+  }
+  function closeModal() {
+    document.getElementById('authModal').classList.remove('open');
+  }
+  document.getElementById('authModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+  function switchTab(type) {
+    const isLogin = type === 'login';
+    document.getElementById('loginTab').classList.toggle('active', isLogin);
+    document.getElementById('signupTab').classList.toggle('active', !isLogin);
+    document.getElementById('loginFields').style.display = isLogin ? 'block' : 'none';
+    document.getElementById('signupFields').style.display = isLogin ? 'none' : 'block';
+    document.getElementById('modalTitle').textContent = isLogin ? 'Welcome Back' : 'Join RE HOME';
+    document.getElementById('modalSub').textContent = isLogin ? 'Sign in to your RE HOME account' : 'Create a free account today';
+  }
+  function fakeAuth(type) {
+    closeModal();
+    showToast(type === 'login' ? '✅ Logged in successfully!' : '🎉 Account created! Welcome to RE HOME.');
+  }
+
+  // Toast
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // Contact form
+  function submitForm() {
+    const name = document.getElementById('fname').value.trim();
+    const email = document.getElementById('femail').value.trim();
+    if (!name || !email) { showToast('⚠️ Please fill in your name and email.'); return; }
+    showToast('✅ Message sent! We\'ll get back to you soon.');
+    document.querySelectorAll('.contact-form input, .contact-form select, .contact-form textarea').forEach(el => el.value = '');
+  }
+
+  // Scroll-reveal animation
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.step-card, .cat-card, .feature-card, .product-card, .mission-item, .contact-info-item').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(28px)';
+    el.style.transition = `opacity 0.55s ${i * 0.07}s ease, transform 0.55s ${i * 0.07}s ease`;
+    obs.observe(el);
+  });
+</script>
+</body>
+</html>
